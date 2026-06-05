@@ -33,3 +33,6 @@ void inisialisasiSistem(void) {
 
 }
 
+int isQueueEmpty(Queue *queue) {
+    return (queue->front == NULL);
+}
