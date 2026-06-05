@@ -7,8 +7,6 @@ NodeRiwayat *headRiwayat = NULL;
 int nomorAntrianGlobal = 1;
 
 void inisialisasiSistem(void) {
-
-}
 int i;
 
 for(i = 0; i < JUMLAH_LOKET; i++) {
