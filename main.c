@@ -1,6 +1,7 @@
 #include "samsatq.h"
 int main () {
     int pilihan;
+    int layanan;
 
     do{
         printf("\n========================================\n");
