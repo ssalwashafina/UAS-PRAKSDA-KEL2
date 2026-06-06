@@ -11,6 +11,10 @@
 #define LOKET_BALIK_NAMA 2
 #define LOKET_STNK 3
 
+#define ESTIMASI_PAJAK 10
+#define ESTIMASI_BALIK_NAMA 20
+#define ESTIMASI_STNK 15
+
 typedef struct {
     int nomorAntrian;
     char nama[50];
@@ -58,9 +62,14 @@ void tambahRiwayat(Warga warga);
 void traversalRiwayat(NodeRiwayat *head);
 void ambilNomorAntrian(void);
 void batalAntrian(Queue *queue, int nomorAntrian);
-void tampilkanMenu(void);
-void panggilAntrian(void);
+void panggilAntrian(int idLoket);
 void bebaskanMemori(void);
+int hitungEstimasi(int idLoket, int posisi);
+void tampilkanMenuUtama(void);
+void tampilkanMenuUser(void);
+void tampilkanMenuAdmin(void);
+void jalankanMenuUser(void);
+void jalankanMenuAdmin(void);
 
 #endif
 

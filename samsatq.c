@@ -29,10 +29,177 @@ void inisialisasiSistem(void) {
     daftarLoket[2].totalDilayani  = 0;
  
     headRiwayat        = NULL;
-    nomorAntrianGlobal = 0;
-
+    nomorAntrianGlobal = 1;
 }
 
 int isQueueEmpty(Queue *queue) {
     return (queue->front == NULL);
+}
+
+void enqueue(Queue *queue, Warga warga) {
+    NodeQueue *buatNode;
+    buatNode = (NodeQueue*) malloc(sizeof(NodeQueue));
+
+    if (buatNode == NULL) {
+        printf("Gagal Mengalokasikan Memori!\n");
+        return;
+    }
+
+    buatNode->data = warga;
+    buatNode->next = NULL;
+
+    if (queue->rear == NULL) {
+        queue->front = buatNode;
+        queue->rear = buatNode;
+    } else {
+        queue->rear->next = buatNode;
+        queue->rear = buatNode;
+    }
+
+    queue->jumlah++;
+}
+
+Warga dequeue(Queue *queue) {
+    Warga wargaKosong = {0};
+
+    if (isQueueEmpty(queue)) {
+        printf("Antrian Kosong!\n");
+        return wargaKosong;
+    }
+
+    NodeQueue *temp = queue->front;
+    Warga warga = temp->data;
+    queue->front = queue->front->next;
+
+    if (queue->front == NULL) {
+        queue->rear = NULL;
+    }
+    
+    free(temp);
+    queue->jumlah--;
+    return warga;
+}
+
+int hitungEstimasi(int idLoket, int posisi) {
+
+    switch (idLoket) {
+        case LOKET_PAJAK:
+        return posisi * ESTIMASI_PAJAK;
+
+        case LOKET_BALIK_NAMA:
+        return posisi * ESTIMASI_BALIK_NAMA;
+
+        case LOKET_STNK:
+        return posisi * ESTIMASI_STNK;
+
+        default:
+        return 0;
+    }
+}
+
+void ambilNomorAntrian(void) {
+    Warga warga;
+    int valid, i;
+
+    printf("\n========================================\n");
+    printf("            AMBIL NOMOR ANTRIAN\n");
+    printf("========================================\n");
+    printf("1. Pajak Kendaraan\n");
+    printf("2. Balik Nama Kendaraan\n");
+    printf("3. Penerbitan STNK\n");
+    printf("0. Kembali\n");
+    printf("========================================\n");
+    printf("Pilihan Anda : ");
+    scanf("%d", &warga.jenisLoket);
+
+    if (warga.jenisLoket == 0) {
+        return;
+    }
+
+    if (warga.jenisLoket < 1 || warga.jenisLoket > 3) {
+        printf("Pilihan Loket Tidak Valid!\n");
+        return;
+    }
+
+    getchar(); 
+
+    printf("Masukkan Nama Lengkap: ");
+    fgets(warga.nama, sizeof(warga.nama), stdin);
+    warga.nama[strcspn(warga.nama, "\n")] = '\0';
+
+    do {
+        valid = 1;
+
+        printf("Masukkan NIK (16 Digit): ");
+        fgets(warga.nik, sizeof(warga.nik), stdin);
+        warga.nik[strcspn(warga.nik, "\n")] = '\0';
+
+        if (strlen(warga.nik) != 16) {
+            valid = 0;
+        } else {
+            for (i = 0; i < 16; i++) {
+                if (warga.nik[i] < '0' || warga.nik[i] > '9') {
+                    valid = 0;
+                    break;
+                }
+            }
+        }
+
+        if (!valid) {
+            printf("NIK Harus Terdiri dari 16 Digit Angka!\n");
+        }
+    } while (!valid);
+
+    warga.nomorAntrian = nomorAntrianGlobal++;
+    warga.waktuTunggu = hitungEstimasi(warga.jenisLoket, antrianLoket[warga.jenisLoket - 1].jumlah);
+
+    enqueue(&antrianLoket[warga.jenisLoket - 1], warga);
+
+    printf("=========================================\n");
+    printf("            NOMOR ANTRIAN ANDA\n");
+    printf("=========================================\n");
+    printf("Nomor Antrian : %d\n", warga.nomorAntrian);
+    printf("Nama          : %s\n", warga.nama);
+
+    switch (warga.jenisLoket) {
+
+        case LOKET_PAJAK:
+        printf("Layanan: Pajak Kendaraan\n");
+        break;
+
+        case LOKET_BALIK_NAMA:
+        printf("Layanan: Balik Nama Kendaraan\n");
+        break;
+
+        case LOKET_STNK:
+        printf("Layanan: Penerbitan STNK\n");
+        break;
+    }
+
+    printf("Estimasi Waktu Tunggu: %d Menit\n", warga.waktuTunggu);
+    printf("=========================================\n");
+}
+
+void tampilkanAntrian(Queue *queue) {
+
+}
+
+void batalAntrian(Queue *queue, int nomorAntrian) {
+
+}
+
+void panggilAntrian(int idLoket) {
+
+}
+
+void traversalRiwayat(NodeRiwayat *head) {
+
+}
+
+void bubbleSortAntrian(NodeRiwayat *head) {
+    
+}
+
+void bebaskanMemori(void) {
+
 }
