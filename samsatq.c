@@ -245,18 +245,97 @@ void batalAntrian(Queue *queue, int nomorAntrian) {
            nomorAntrian);
 }
 
-void panggilAntrian(int idLoket) {
+void tambahRiwayat(Warga warga) {
+    NodeRiwayat *nodeBaru;
+    NodeRiwayat *current;
 
+    nodeBaru = (NodeRiwayat*) malloc(sizeof(NodeRiwayat));
+
+    if (nodeBaru == NULL) {
+        printf("Gagal mengalokasikan memori!\n");
+        return;
+    }
+
+    nodeBaru->data = warga;
+    nodeBaru->next = NULL;
+
+    if (headRiwayat == NULL) {
+        headRiwayat = nodeBaru;
+    } else {
+        current = headRiwayat;
+
+        while (current->next != NULL) {
+            current = current->next;
+        }
+
+        current->next = nodeBaru;
+    }
+}
+
+void panggilAntrian(int idLoket) {
+    Warga warga;
+
+    if (idLoket < 1 || idLoket > 3) {
+        printf("Loket tidak valid!\n");
+        return;
+    }
+
+    warga = dequeue(&antrianLoket[idLoket - 1]);
+
+    if (warga.nomorAntrian == 0) {
+        return;
+    }
+
+    printf("\n========================================\n");
+    printf("         WARGA SEDANG DILAYANI\n");
+    printf("========================================\n");
+    printf("Nomor Antrian : %d\n", warga.nomorAntrian);
+    printf("Nama          : %s\n", warga.nama);
+    printf("NIK           : %s\n", warga.nik);
+
+    switch (idLoket) {
+
+        case LOKET_PAJAK:
+            printf("Loket         : Pajak Kendaraan\n");
+            break;
+
+        case LOKET_BALIK_NAMA:
+            printf("Loket         : Balik Nama Kendaraan\n");
+            break;
+
+        case LOKET_STNK:
+            printf("Loket         : Penerbitan STNK\n");
+            break;
+    }
+
+    printf("========================================\n");
+
+    tambahRiwayat(warga);
+
+    daftarLoket[idLoket - 1].totalDilayani++;
 }
 
 void traversalRiwayat(NodeRiwayat *head) {
+    NodeRiwayat *current;
 
-}
+    if (head == NULL) {
+        printf("Belum ada riwayat layanan.\n");
+        return;
+    }
 
-void bubbleSortAntrian(NodeRiwayat *head) {
-    
-}
+    current = head;
 
-void bebaskanMemori(void) {
+    while (current != NULL) {
+        printf("Nomor Antrian : %d\n",
+               current->data.nomorAntrian);
+        printf("Nama          : %s\n",
+               current->data.nama);
+        printf("NIK           : %s\n",
+               current->data.nik);
+        printf("Waktu Tunggu  : %d menit\n",
+               current->data.waktuTunggu);
+        printf("----------------------------------------\n");
 
+        current = current->next;
+    }
 }
