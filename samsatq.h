@@ -57,7 +57,7 @@ Warga dequeue(Queue *queue);
 int isQueueEmpty(Queue *queue);
 void tampilkanAntrian(Queue *queue);
 void insertionSortAntrian(Queue *queue);
-void bubbleSortAntrian (NodeRiwayat *head);
+void bubbleSortRiwayat (NodeRiwayat *head);
 void tambahRiwayat(Warga warga);
 void traversalRiwayat(NodeRiwayat *head);
 void ambilNomorAntrian(void);
