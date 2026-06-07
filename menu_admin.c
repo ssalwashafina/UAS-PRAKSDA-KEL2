@@ -61,7 +61,7 @@ void jalankanMenuAdmin(void) {
             printf("    LAPORAN STATISTIK WAKTU TUNGGU\n");
             printf("========================================\n");
             
-            bubbleSortAntrian(headRiwayat);
+            bubbleSortRiwayat(headRiwayat);
             traversalRiwayat(headRiwayat);
             break;
 
