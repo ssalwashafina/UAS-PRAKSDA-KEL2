@@ -370,3 +370,40 @@ void insertionSortAntrian(Queue *queue) {
     while (temp->next != NULL) temp = temp->next;
     queue->rear = temp;
 }
+
+void bubbleSortRiwayat(NodeRiwayat *head) {
+    if (head == NULL) return;
+    int swapped;
+    do {
+        swapped = 0;
+        NodeRiwayat *cur = head;
+        while (cur->next != NULL) {
+            if (cur->data.waktuTunggu > cur->next->data.waktuTunggu) {
+                Warga tmp       = cur->data;
+                cur->data       = cur->next->data;
+                cur->next->data = tmp;
+                swapped = 1;
+            }
+            cur = cur->next;
+        }
+    } while (swapped);
+}
+
+void bebaskanMemori(void) {
+    int i;
+
+    for (i = 0; i < JUMLAH_LOKET; i++) {
+
+        while (!isQueueEmpty(&antrianLoket[i])) {
+            dequeue(&antrianLoket[i]);
+        }
+    }
+
+    NodeRiwayat *temp;
+
+    while (headRiwayat != NULL) {
+        temp = headRiwayat;
+        headRiwayat = headRiwayat->next;
+        free(temp);
+    }
+}
