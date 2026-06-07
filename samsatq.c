@@ -181,11 +181,68 @@ void ambilNomorAntrian(void) {
 }
 
 void tampilkanAntrian(Queue *queue) {
+     NodeQueue *current;
 
+    if (isQueueEmpty(queue)) {
+        printf("Antrian kosong.\n");
+        return;
+    }
+
+    current = queue->front;
+
+    while (current != NULL) {
+        printf("Nomor Antrian : %d\n", current->data.nomorAntrian);
+        printf("Nama          : %s\n", current->data.nama);
+        printf("NIK           : %s\n", current->data.nik);
+        printf("Estimasi      : %d menit\n", current->data.waktuTunggu);
+        printf("----------------------------------------\n");
+
+        current = current->next;
+    }
 }
 
 void batalAntrian(Queue *queue, int nomorAntrian) {
+    NodeQueue *current, *prev;
 
+    if (isQueueEmpty(queue)) {
+        printf("Antrian kosong.\n");
+        return;
+    }
+
+    current = queue->front;
+    prev = NULL;
+
+    while (current != NULL &&
+           current->data.nomorAntrian != nomorAntrian) {
+
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Nomor Antrian Tidak Ditemukan!\n");
+        return;
+    }
+
+    if (prev == NULL) {
+        queue->front = current->next;
+
+        if (queue->front == NULL) {
+            queue->rear = NULL;
+        }
+    } else {
+        prev->next = current->next;
+
+        if (current == queue->rear) {
+            queue->rear = prev;
+        }
+    }
+
+    free(current);
+    queue->jumlah--;
+
+    printf("Nomor Antrian %d Berhasil Dibatalkan.\n",
+           nomorAntrian);
 }
 
 void panggilAntrian(int idLoket) {
