@@ -339,3 +339,34 @@ void traversalRiwayat(NodeRiwayat *head) {
         current = current->next;
     }
 }
+
+void insertionSortAntrian(Queue *queue) {
+    if (queue->jumlah <= 1) return;
+
+    NodeQueue *sorted  = NULL;
+    NodeQueue *current = queue->front;
+
+    while (current != NULL) {
+        NodeQueue *next   = current->next;
+        NodeQueue *posisi = sorted;
+
+        if (posisi == NULL ||
+            posisi->data.nomorAntrian >= current->data.nomorAntrian) {
+            current->next = sorted;
+            sorted        = current;
+        } else {
+            while (posisi->next != NULL &&
+                   posisi->next->data.nomorAntrian < current->data.nomorAntrian) {
+                posisi = posisi->next;
+            }
+            current->next = posisi->next;
+            posisi->next  = current;
+        }
+        current = next;
+    }
+
+    queue->front = sorted;
+    NodeQueue *temp = sorted;
+    while (temp->next != NULL) temp = temp->next;
+    queue->rear = temp;
+}
