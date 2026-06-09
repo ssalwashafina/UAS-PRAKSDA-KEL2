@@ -16,8 +16,12 @@ void jalankanMenuUser(void) {
     int pilihan;
 
     do {
-        tampilkanMenuUser();
-        scanf("%d", &pilihan);
+          tampilkanMenuUser();
+        if (scanf("%d", &pilihan) != 1) {
+            while (getchar() != '\n');
+            printf("\nPilihan tidak valid!\n");
+            continue;
+        }
 
         switch (pilihan) {
 
@@ -50,7 +54,11 @@ void jalankanMenuUser(void) {
                 printf("0. Kembali\n");
                 printf("========================================\n");
                 printf("Pilihan Anda: ");
-                scanf("%d", &loket);
+                if (scanf("%d", &loket) != 1) {
+                    while (getchar() != '\n');
+                    printf("Pilihan tidak valid!\n");
+                    break;
+                }
 
                 if (loket == 0) {
                     break;
@@ -62,7 +70,11 @@ void jalankanMenuUser(void) {
                 } 
 
                 printf("Masukkan nomor antrian yang dibatalkan: ");
-                scanf("%d", &nomor);
+                if (scanf("%d", &nomor) != 1) {
+                    while (getchar() != '\n');
+                    printf("Nomor tidak valid!\n");
+                    break;
+                }
                 batalAntrian(&antrianLoket[loket - 1], nomor);
                 break;
             }

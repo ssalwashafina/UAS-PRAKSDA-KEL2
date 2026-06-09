@@ -14,7 +14,12 @@ int main() {
         printf("0. Keluar\n");
         printf("========================================\n");
         printf("Pilihan Anda : ");
-        scanf("%d", &pilihan);
+        
+         if (scanf("%d", &pilihan) != 1) {
+            while (getchar() != '\n');
+            printf("\nPilihan tidak valid!\n");
+            continue;
+        }
 
         switch (pilihan) {
             case 1:

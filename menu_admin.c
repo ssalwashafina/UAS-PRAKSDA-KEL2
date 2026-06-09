@@ -17,7 +17,11 @@ void jalankanMenuAdmin(void) {
 
     do {
         tampilkanMenuAdmin();
-        scanf("%d", &pilihan);
+        if (scanf("%d", &pilihan) != 1) {
+            while (getchar() != '\n');
+            printf("\nPilihan tidak valid!\n");
+            continue;
+        }
 
         switch (pilihan) {
 
@@ -33,7 +37,11 @@ void jalankanMenuAdmin(void) {
                 printf("0. Kembali\n");
                 printf("========================================\n");
                 printf("Pilihan Anda : ");
-                scanf("%d", &idLoket);
+                if (scanf("%d", &idLoket) != 1) {
+                    while (getchar() != '\n');
+                    printf("Pilihan tidak valid!\n");
+                    break;
+                }
 
                 if (idLoket == 0) {
                     break;
