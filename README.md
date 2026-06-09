@@ -95,7 +95,7 @@ git clone https://github.com/ssalwashafina/UAS-PRAKSDA-KEL2.git
 cd UAS-PRAKSDA-KEL2
 
 # Kompilasi program
-gcc main.c -o samsatq
+gcc main.c samsatq.c menu_user.c menu_admin.c -o samsatq
 
 # Jalankan program
 ./samsatq
@@ -104,7 +104,7 @@ gcc main.c -o samsatq
 ### Untuk Windows
 
 ```bash
-gcc main.c -o samsatq.exe
+gcc main.c samsatq.c menu_user.c menu_admin.c -o samsatq.exe
 samsatq.exe
 ```
 
