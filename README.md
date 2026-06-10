@@ -235,7 +235,10 @@ Pilihan Anda :
 1. Panggil Antrian
 2. Riwayat Layanan Hari Ini
 3. Laporan Statistik Waktu Tunggu
-0. Kembali
+4. Cari Riwayat (BST)
+5. Ekspor Data ke TXT
+6. Cari Data Antrian (Binary Search)
+7. Kembali
 ========================================
 ```
 
