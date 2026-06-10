@@ -15,7 +15,6 @@
 |------|
 | Aisya Ghaisany |
 | Siti Salwa Shafina |
-| M. Rafli Afrizal |
 | M. Ihsan Syahni |
 
 **Mata Kuliah:** Praktikum Struktur Data dan Algoritma — Kelas C  
@@ -44,6 +43,7 @@ Tujuannya adalah mensimulasikan pengelolaan antrian yang **adil, efisien, dan tr
 | **Queue** | `antrianLoket[3]` | Mengelola antrian aktif warga per loket (FIFO) |
 | **Linked List** | `headRiwayat` | Menyimpan riwayat warga yang telah dilayani |
 | **Array** | `daftarLoket[3]` | Menyimpan data statis tiga loket layanan |
+|**BST** | `rootBST` | Mengindeks riwayat layanan untuk pencarian cepat (O(log n)) |
 
 ---
 
@@ -54,6 +54,8 @@ Tujuannya adalah mensimulasikan pengelolaan antrian yang **adil, efisien, dan tr
 | **Insertion Sort** | `insertionSortAntrian()` | Mengurutkan antrian berdasarkan nomor urut setiap kali warga baru masuk |
 | **Bubble Sort** | `bubbleSortRiwayat()` | Mengurutkan riwayat layanan berdasarkan waktu tunggu terlama |
 | **Traversal Linked List** | `traversalRiwayat()` | Menampilkan seluruh riwayat layanan harian |
+| **Binary Search** | `cariWargaBinarySearch()` | Mencari warga dalam antrian aktif berdasarkan NIK/Nama (O(log n)) |
+| **BST Search** | `cariNomorBST()` | Mencari riwayat warga berdasarkan nomor antrian (O(log n)) |
 
 ---
 
@@ -68,20 +70,23 @@ Tujuannya adalah mensimulasikan pengelolaan antrian yang **adil, efisien, dan tr
 - ✅ Panggil antrian berikutnya per loket
 - ✅ Tampilkan riwayat layanan hari ini
 - ✅ Laporan statistik waktu tunggu (diurutkan Bubble Sort)
-
+- ✅ Cari riwayat berdasarkan nomor antrian (BST Search) ← BARU
+- ✅ Ekspor data ke file TXT (persistensi data) ← BARU
+- ✅ Cari data antrian berdasarkan NIK atau Nama (Binary Search) ← BARU
 ---
 
 ## 📁 Struktur File
 
 ```
 UAS-PRAKSDA-KEL2/
-│
 ├── main.c          # Entry point — menu utama (User / Admin / Keluar)
 ├── samsatq.h       # Header — semua struct, define, dan deklarasi fungsi
 ├── samsatq.c       # Implementasi semua fungsi inti sistem
 ├── menu_user.c     # Implementasi menu dan alur interaksi User
 ├── menu_admin.c    # Implementasi menu dan alur interaksi Admin
-├── Makefile        # Script kompilasi otomatis
+├── bst.c           # Implementasi BST (insert, search, traversal, free) ← BARU
+├── fileio.c        # Implementasi ekspor & impor data ke file TXT ← BARU
+├── search.c        # Implementasi Binary Search pada antrian aktif ← BARU
 ├── .gitignore      # Ignore *.exe dan *.o
 └── README.md       # Dokumentasi proyek
 ```
@@ -126,6 +131,13 @@ typedef struct {
     int  statusTersedia;  // 1=tersedia, 0=sibuk
     int  totalDilayani;
 } Loket;
+
+// Node untuk Binary Search Tree (BST)
+typedef struct NodeBST {
+    Warga data;
+    struct NodeBST *kiri;
+    struct NodeBST *kanan;
+} NodeBST;
 ```
 
 ---
@@ -150,6 +162,13 @@ typedef struct {
 | `bebaskanMemori()` | samsatq.c | Bebaskan semua memori dinamis saat program selesai |
 | `jalankanMenuUser()` | menu_user.c | Loop menu interaksi warga |
 | `jalankanMenuAdmin()` | menu_admin.c | Loop menu interaksi petugas |
+| `insertBST()` | bst.c | Sisipkan data warga ke BST — O(log n) rata-rata |
+| `cariNomorBST()` | bst.c | Cari warga dalam BST berdasarkan nomor antrian — O(log n) |
+| `tampilkanBSTInorder()` | bst.c | Traversal inorder BST (menampilkan data terurut) |
+| `bebaskanBST()` | bst.c | Bebaskan seluruh memori BST |
+| `cariWargaBinarySearch()` | search.c | Cari warga dalam antrian aktif dengan Binary Search — O(log n) |
+| `eksporDataKeTXT()` | fileio.c | Simpan semua data (antrian + riwayat) ke file data_samsatq.txt |
+| `imporDataDariTXT()` | fileio.c | Baca dan pulihkan data dari file saat program start |
 
 ---
 
@@ -170,13 +189,13 @@ cd UAS-PRAKSDA-KEL2
 
 ```bash
 # Linux / Mac
-gcc main.c samsatq.c menu_user.c menu_admin.c -o samsatq
+gcc main.c samsatq.c menu_user.c menu_admin.c bst.c fileio.c search.c -o samsatq
 ./samsatq
 ```
 
 ```bash
 # Windows
-gcc main.c samsatq.c menu_user.c menu_admin.c -o samsatq.exe
+gcc main.c samsatq.c menu_user.c menu_admin.c bst.c fileio.c search.c -o samsatq.exe
 samsatq.exe
 ```
 
@@ -232,17 +251,23 @@ Pilihan Anda :
 | Bubble Sort | O(n²) | Dijalankan sekali saat laporan diminta |
 | Traversal Riwayat | O(n) | Kunjungi semua node Linked List |
 | Batal Antrian | O(n) | Cari node di posisi mana pun dalam Queue |
+| BST Insert | O(log n) rata-rata | Menyisipkan data ke BST ← BARU |
+| BST Search | O(log n) rata-rata | Mencari data di BST ← BARU |
+| Binary Search	| O(log n) | Mencari data di array terurut ← BARU |
+
 
 ---
 
 ## 🗂️ Arsitektur Sistem
 
 ```
-INPUT                   PROSES                        OUTPUT
-─────────────────       ───────────────────────────   ──────────────────────────
-Pilihan Menu       ──►  Enqueue (tambah warga)    ──► Tampilkan Nomor Antrian
-Input Data Warga        Insertion Sort                 Tampilkan Antrian Aktif
-Pilih Jenis Loket       Dequeue (panggil warga)        Tampilkan Riwayat Layanan
-Nomor Antrian Batal     Batal Antrian                  Laporan Statistik
-                        Tambah Riwayat (Linked List)   Tampilkan Total Dilayani
-                        Bubble Sort
+INPUT                          PROSES                                    OUTPUT
+─────────────────              ───────────────────────────              ──────────────────────────
+Pilihan Menu              ──►  Enqueue (tambah warga)               ──► Tampilkan Nomor Antrian
+Input Data Warga               Dequeue (panggil warga)                  Tampilkan Antrian Aktif
+Pilih Jenis Loket              Batal Antrian                            Tampilkan Riwayat Layanan
+Nomor Antrian (cari)           Tambah Riwayat (Linked List)             Laporan Statistik (Bubble Sort)
+NIK / Nama (cari)              Bubble Sort (riwayat)                    Hasil Pencarian BST
+                               BST Insert / Search                      Hasil Pencarian Binary Search
+                               Binary Search (array)                    Konfirmasi Ekspor Data
+                               File I/O (ekspor/impor)
