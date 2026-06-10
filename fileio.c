@@ -23,9 +23,14 @@ void eksporDataKeTXT(void) {
                 cur->data.nik,
                 cur->data.waktuTunggu);
 
-            fprintf(file, "NAMA %d %s\n",
-                cur->data.nomorAntrian,
-                cur->data.nama);
+            // PERBAIKAN: Pastikan nama tidak kosong
+            if (strlen(cur->data.nama) > 0) {
+                fprintf(file, "NAMA %d %s\n",
+                    cur->data.nomorAntrian,
+                    cur->data.nama);
+            } else {
+                fprintf(file, "NAMA %d -\n", cur->data.nomorAntrian);
+            }
             cur = cur->next;
         }
     }
@@ -37,9 +42,14 @@ void eksporDataKeTXT(void) {
             curR->data.jenisLoket,
             curR->data.nik,
             curR->data.waktuTunggu);
-        fprintf(file, "NAMAR %d %s\n",
-            curR->data.nomorAntrian,
-            curR->data.nama);
+        
+        if (strlen(curR->data.nama) > 0) {
+            fprintf(file, "NAMAR %d %s\n",
+                curR->data.nomorAntrian,
+                curR->data.nama);
+        } else {
+            fprintf(file, "NAMAR %d -\n", curR->data.nomorAntrian);
+        }
         curR = curR->next;
     }
 
@@ -51,6 +61,7 @@ void imporDataDariTXT(void) {
     FILE *file;
     char baris[300];
     char tag[20];
+    char *posNama;
 
     file = fopen("data_samsatq.txt", "r");
     if (file == NULL) {
@@ -64,6 +75,9 @@ void imporDataDariTXT(void) {
 
     while (fgets(baris, sizeof(baris), file)) {
         baris[strcspn(baris, "\n")] = '\0';
+        
+        // Skip baris kosong
+        if (strlen(baris) == 0) continue;
 
         sscanf(baris, "%s", tag);
 
@@ -82,20 +96,36 @@ void imporDataDariTXT(void) {
 
         } else if (strcmp(tag, "NAMA") == 0) {
             int nomor;
-            char nama[50];
-            sscanf(baris, "%s %d", tag, &nomor);
-            char *posNama = baris;
-            int spasi = 0;
-            while (*posNama && spasi < 2) {
-                if (*posNama == ' ') spasi++;
+            char nama[50] = "";
+            
+            // PERBAIKAN: Ambil seluruh teks setelah NOMOR
+            // Cari posisi setelah spasi kedua
+            posNama = baris;
+            int spasiDitemukan = 0;
+            while (*posNama && spasiDitemukan < 2) {
+                if (*posNama == ' ') spasiDitemukan++;
                 posNama++;
             }
-            strncpy(nama, posNama, sizeof(nama) - 1);
-            /* Cocokkan ke tempAntrian */
+            
+            // Ambil nomor antrian dari awal baris
+            sscanf(baris, "%s %d", tag, &nomor);
+            
+            // Ambil nama (sisanya setelah spasi kedua)
+            if (strlen(posNama) > 0) {
+                strncpy(nama, posNama, sizeof(nama) - 1);
+                nama[sizeof(nama) - 1] = '\0';
+            }
+            
+            // PERBAIKAN: Jika nama kosong atau hanya "-", beri default
+            if (strlen(nama) == 0 || strcmp(nama, "-") == 0) {
+                sprintf(nama, "Warga_%d", nomor);
+            }
+            
+            // Cocokkan ke tempAntrian
             for (idx = 0; idx < jumlahAntrian; idx++) {
                 if (tempAntrian[idx].nomorAntrian == nomor) {
-                    strncpy(tempAntrian[idx].nama, nama,
-                            sizeof(tempAntrian[idx].nama) - 1);
+                    strncpy(tempAntrian[idx].nama, nama, sizeof(tempAntrian[idx].nama) - 1);
+                    tempAntrian[idx].nama[sizeof(tempAntrian[idx].nama) - 1] = '\0';
                     break;
                 }
             }
@@ -112,19 +142,30 @@ void imporDataDariTXT(void) {
 
         } else if (strcmp(tag, "NAMAR") == 0) {
             int nomor;
-            char nama[50];
-            sscanf(baris, "%s %d", tag, &nomor);
-            char *posNama = baris;
-            int spasi = 0;
-            while (*posNama && spasi < 2) {
-                if (*posNama == ' ') spasi++;
+            char nama[50] = "";
+            
+            posNama = baris;
+            int spasiDitemukan = 0;
+            while (*posNama && spasiDitemukan < 2) {
+                if (*posNama == ' ') spasiDitemukan++;
                 posNama++;
             }
-            strncpy(nama, posNama, sizeof(nama) - 1);
+            
+            sscanf(baris, "%s %d", tag, &nomor);
+            
+            if (strlen(posNama) > 0) {
+                strncpy(nama, posNama, sizeof(nama) - 1);
+                nama[sizeof(nama) - 1] = '\0';
+            }
+            
+            if (strlen(nama) == 0 || strcmp(nama, "-") == 0) {
+                sprintf(nama, "Warga_%d", nomor);
+            }
+            
             for (idx = 0; idx < jumlahRiwayat; idx++) {
                 if (tempRiwayat[idx].nomorAntrian == nomor) {
-                    strncpy(tempRiwayat[idx].nama, nama,
-                            sizeof(tempRiwayat[idx].nama) - 1);
+                    strncpy(tempRiwayat[idx].nama, nama, sizeof(tempRiwayat[idx].nama) - 1);
+                    tempRiwayat[idx].nama[sizeof(tempRiwayat[idx].nama) - 1] = '\0';
                     break;
                 }
             }
@@ -133,6 +174,7 @@ void imporDataDariTXT(void) {
 
     fclose(file);
 
+    // Restore antrian
     for (idx = 0; idx < jumlahAntrian; idx++) {
         int loketIdx = tempAntrian[idx].jenisLoket - 1;
         if (loketIdx >= 0 && loketIdx < JUMLAH_LOKET) {
@@ -140,6 +182,7 @@ void imporDataDariTXT(void) {
         }
     }
 
+    // Restore riwayat
     for (idx = 0; idx < jumlahRiwayat; idx++) {
         tambahRiwayat(tempRiwayat[idx]);
         daftarLoket[tempRiwayat[idx].jenisLoket - 1].totalDilayani++;
