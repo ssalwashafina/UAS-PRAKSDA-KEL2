@@ -46,10 +46,20 @@ typedef struct {
     int totalDilayani;
 } Loket;
 
+typedef struct NodeBST {
+    Warga data;
+    struct NodeBST *kiri;
+    struct NodeBST *kanan;
+} NodeBST;
+
 extern Queue antrianLoket[JUMLAH_LOKET]; //antrian per loket
 extern Loket daftarLoket[JUMLAH_LOKET]; //data loket (array)
 extern NodeRiwayat *headRiwayat; //head linked list
 extern int nomorAntrianGlobal; //counter nomor urut antrian
+extern NodeBST *rootBST;
+
+NodeBST* insertBST(NodeBST *root, Warga warga);
+NodeBST* cariNomorBST(NodeBST *root, int nomorAntrian);
 
 void inisialisasiSistem(void);
 void enqueue(Queue *queue, Warga warga);
@@ -70,7 +80,11 @@ void tampilkanMenuUser(void);
 void tampilkanMenuAdmin(void);
 void jalankanMenuUser(void);
 void jalankanMenuAdmin(void);
-
+void tampilkanBSTInorder(NodeBST *root);
+void bebaskanBST(NodeBST *root);
+void cariWargaBinarySearch(int idLoket, char *kunci, int modeNIK);
+void eksporDataKeTXT(void);
+void imporDataDariTXT(void);
 #endif
 
 

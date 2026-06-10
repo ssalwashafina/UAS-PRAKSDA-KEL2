@@ -4,6 +4,7 @@ int main() {
     int pilihan;
 
     inisialisasiSistem();
+    imporDataDariTXT();
 
     do {
         printf("\n========================================\n");

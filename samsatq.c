@@ -263,13 +263,13 @@ void tambahRiwayat(Warga warga) {
         headRiwayat = nodeBaru;
     } else {
         current = headRiwayat;
-
         while (current->next != NULL) {
             current = current->next;
         }
-
         current->next = nodeBaru;
     }
+
+    rootBST = insertBST(rootBST, warga);
 }
 
 void panggilAntrian(int idLoket) {
@@ -406,4 +406,7 @@ void bebaskanMemori(void) {
         headRiwayat = headRiwayat->next;
         free(temp);
     }
+
+    bebaskanBST(rootBST);
+    rootBST = NULL;
 }
