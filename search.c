@@ -1,10 +1,6 @@
 #include "samsatq.h"
 #include <string.h>
 
-/*
- * Helper: salin semua node antrian ke array sementara.
- * Kembalikan jumlah elemen.
- */
 static int salinKeArray(Queue *queue, Warga *arr, int maks) {
     NodeQueue *cur = queue->front;
     int i = 0;
@@ -15,10 +11,6 @@ static int salinKeArray(Queue *queue, Warga *arr, int maks) {
     return i;
 }
 
-/*
- * Helper: urutkan array Warga berdasarkan NIK (untuk binary search NIK).
- * Menggunakan insertion sort sederhana.
- */
 static void sortArrayByNIK(Warga *arr, int n) {
     int i, j;
     Warga kunci;
@@ -33,9 +25,6 @@ static void sortArrayByNIK(Warga *arr, int n) {
     }
 }
 
-/*
- * Helper: urutkan array Warga berdasarkan nama.
- */
 static void sortArrayByNama(Warga *arr, int n) {
     int i, j;
     Warga kunci;
@@ -50,10 +39,6 @@ static void sortArrayByNama(Warga *arr, int n) {
     }
 }
 
-/*
- * Binary Search berdasarkan NIK (exact match).
- * Kembalikan indeks jika ditemukan, -1 jika tidak.
- */
 static int binarySearchNIK(Warga *arr, int n, char *nik) {
     int kiri = 0, kanan = n - 1, tengah, cmp;
     while (kiri <= kanan) {
@@ -66,9 +51,6 @@ static int binarySearchNIK(Warga *arr, int n, char *nik) {
     return -1;
 }
 
-/*
- * Binary Search berdasarkan nama (exact match, case-sensitive).
- */
 static int binarySearchNama(Warga *arr, int n, char *nama) {
     int kiri = 0, kanan = n - 1, tengah, cmp;
     while (kiri <= kanan) {
@@ -81,12 +63,6 @@ static int binarySearchNama(Warga *arr, int n, char *nama) {
     return -1;
 }
 
-/*
- * Fungsi utama pencarian warga di antrian.
- * idLoket : 1-3 (0 = cari di semua loket)
- * kunci   : string NIK atau nama
- * modeNIK : 1 = cari by NIK, 0 = cari by nama
- */
 void cariWargaBinarySearch(int idLoket, char *kunci, int modeNIK) {
     Warga arr[200];
     int n = 0, hasil, i, mulai, selesai;

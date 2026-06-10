@@ -52,10 +52,10 @@ typedef struct NodeBST {
     struct NodeBST *kanan;
 } NodeBST;
 
-extern Queue antrianLoket[JUMLAH_LOKET]; //antrian per loket
-extern Loket daftarLoket[JUMLAH_LOKET]; //data loket (array)
-extern NodeRiwayat *headRiwayat; //head linked list
-extern int nomorAntrianGlobal; //counter nomor urut antrian
+extern Queue antrianLoket[JUMLAH_LOKET];
+extern Loket daftarLoket[JUMLAH_LOKET];
+extern NodeRiwayat *headRiwayat;
+extern int nomorAntrianGlobal;
 extern NodeBST *rootBST;
 
 NodeBST* insertBST(NodeBST *root, Warga warga);

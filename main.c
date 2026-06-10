@@ -32,8 +32,9 @@ int main() {
                 break;
 
             case 0:
-                printf("\nTerima kasih telah menggunakan SamsatQ!\n");
-                break;
+            eksporDataKeTXT();
+            printf("\nTerima kasih telah menggunakan SamsatQ!\n");
+            break;
 
             default:
                 printf("\nPilihan tidak valid!\n");
